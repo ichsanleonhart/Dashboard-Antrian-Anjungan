@@ -1,11 +1,31 @@
 <?php
 
-$db_hostname    = "192.168.196.37";
-$db_username    = "client";
-$db_password    = "epotoransu";
-$db_name        = "sik_master";
-define('USERHYBRIDWEB', 'fiani');
-define('PASHYBRIDWEB', 'mariafransiska');
+// --- SET TIMEZONE GLOBAL KE WIB (GMT+7) ---
+date_default_timezone_set('Asia/Jakarta');
+
+// --- PENGAMANAN IP ADDRESS ---
+$client_ip = $_SERVER['REMOTE_ADDR'];
+
+// Izinkan IP localhost (127.0.0.1 atau ::1) untuk keperluan testing di server
+// dan izinkan segment jaringan 192.168.1.xxx
+if (strpos($client_ip, '192.168.1.') !== 0 && $client_ip !== '127.0.0.1' && $client_ip !== '::1') {
+    // Jika IP tidak sesuai, tolak akses dengan status 403 Forbidden
+    header('HTTP/1.0 403 Forbidden');
+    die("<html><body style='text-align:center; padding:50px; font-family:sans-serif;'>
+            <h1 style='color:red;'>403 - Akses Ditolak</h1>
+            <p>Aplikasi ini hanya dapat diakses melalui jaringan lokal (Segmen 192.168.1.x).</p>
+            <p>IP Anda terdeteksi sebagai: <b>$client_ip</b></p>
+         </body></html>");
+}
+// --- SELESAI PENGAMANAN IP ---
+
+
+$db_hostname    = "192.168.196.33";
+$db_username    = "root";
+$db_password    = "";
+$db_name        = "sik";
+define('USERHYBRIDWEB', 'yanghack');
+define('PASHYBRIDWEB', 'sialselamanya');
 
 function host()
 {

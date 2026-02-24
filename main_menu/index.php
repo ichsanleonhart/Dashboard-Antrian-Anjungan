@@ -30,7 +30,6 @@ $setting = fetch_assoc("SELECT nama_instansi, alamat_instansi, kabupaten FROM se
   <main class="dashboard">
     <h2>MENU UTAMA</h2>
     <div class="menu-grid">
-      <!-- Kolom Dashboard -->
       <div class="menu-column">
         <h3>DASHBOARD</h3>
         <div class="menu-cards">
@@ -61,7 +60,6 @@ $setting = fetch_assoc("SELECT nama_instansi, alamat_instansi, kabupaten FROM se
         </div>
       </div>
 
-      <!-- Kolom Antrian -->
       <div class="menu-column">
         <h3>ANTRIAN DAN ANJUNGAN</h3>
         <div class="menu-cards">
@@ -85,25 +83,28 @@ $setting = fetch_assoc("SELECT nama_instansi, alamat_instansi, kabupaten FROM se
             <img src="assets/img/anjungan.png" alt="Anjungan">
             <span>Anjungan Mandiri</span>
           </a>
+          
+          <a href="antrian/loket_admisi.php" target="_blank">
+            <img src="assets/img/anjungan.png" alt="Loket Admisi"> <span>Loket Admisi</span>
+          </a>
+          <a href="antrian/display_antrean.php" target="_blank">
+            <img src="assets/img/anjungan.png" alt="Display Admisi"> <span>Display TV Admisi</span>
+          </a>
         </div>
 
-        <!-- Tambahan tombol bawah -->
         <div class="menu-actions">
-          <!-- Tombol kiri: API GET LAST -->
           <div class="action-left">
             <a href="antrian/api_get_last_all.php" target="_blank">
               API GET LAST
             </a>
           </div>
 
-          <!-- Tombol tengah: PANGGIL ULANG FARMASI -->
           <div class="action-middle">
             <a href="antrian/antrian_farmasi_bypass.php" target="_blank">
               PANGGIL ULANG FARMASI
             </a>
           </div>
 
-          <!-- Tombol kanan: PANGGIL ULANG POLI -->
           <div class="action-right">
             <a href="antrian/antrian_poli_bypass.php" target="_blank">
               PANGGIL ULANG POLI
@@ -112,7 +113,6 @@ $setting = fetch_assoc("SELECT nama_instansi, alamat_instansi, kabupaten FROM se
         </div>
       </div>
 
-      <!-- Kolom SIMRS -->
       <div class="menu-column">
         <h3>SIMRS</h3>
         <div class="menu-cards">
@@ -135,11 +135,7 @@ $setting = fetch_assoc("SELECT nama_instansi, alamat_instansi, kabupaten FROM se
              target="_blank" rel="noopener noreferrer">
              <img src="assets/img/webapps.png" alt="Webapps">
              <span>KONFIRMASI & PERSETUJUAN</span>
-          </a>
-          <a href="../kyc-library-php?nocache=<?= time() ?>" target="_blank" rel="noopener noreferrer">
-            <img src="assets/img/kyc.png" alt="KYC">
-            <span>KYC</span>
-          </a>
+          </a>         
         </div>
       </div>
     </div>

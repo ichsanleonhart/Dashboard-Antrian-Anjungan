@@ -1,11 +1,11 @@
 <?php
 
-$db_hostname    = "localhost";
-$db_username    = "root";
-$db_password    = "xxx";
-$db_name        = "xxx";
-define('USERHYBRIDWEB', 'yanghack');
-define('PASHYBRIDWEB', 'sialselamanya');
+$db_hostname    = "192.168.196.37";
+$db_username    = "client";
+$db_password    = "epotoransu";
+$db_name        = "sik_master";
+define('USERHYBRIDWEB', 'fiani');
+define('PASHYBRIDWEB', 'mariafransiska');
 
 function host()
 {

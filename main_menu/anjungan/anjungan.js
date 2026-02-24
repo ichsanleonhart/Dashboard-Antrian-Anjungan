@@ -23,7 +23,7 @@ async function cariPasien() {
         sessionStorage.setItem("no_rkm_medis", data.no_rkm_medis);
         sessionStorage.setItem("nm_pasien", data.nm_pasien);
 
-        // Tampilkan data pasien (Dropdown Jenis Bayar dihapus dari sini)
+        // Tampilkan data pasien (Dropdown Jenis Bayar DIHAPUS dari sini, UX lebih baik)
         document.getElementById('dataPasien').innerHTML = `
             <h3>Data Pasien</h3>
             <table class="pasien-table">
@@ -99,7 +99,7 @@ async function loadJadwalPoli(kd_poli) {
             sessionStorage.setItem("nm_dokter_" + j.kd_dokter, j.nm_dokter);
             sessionStorage.setItem("nm_poli_" + j.kd_poli, j.nm_poli);
 
-            // Ubah event onclick untuk memanggil loadPenjab
+            // Ubah event onclick untuk memanggil loadPenjab (Sesuai kesepakatan UX kita)
             html += `
                 <div class="card" onclick="loadPenjab('${j.kd_dokter}', '${j.kd_poli}')">
                     ${j.photo ? `<img src="${j.photo}" alt="Foto Dokter">` : ""}
@@ -120,7 +120,7 @@ async function loadJadwalPoli(kd_poli) {
     }
 }
 
-// Step 3.5: Load Penjamin / Jenis Bayar
+// Step 3.5: Load Penjamin / Jenis Bayar di posisi kanan (Tidak sebagai menu kiri terpisah)
 async function loadPenjab(kd_dokter, kd_poli) {
     try {
         const res = await fetch("api_penjab.php");
@@ -133,7 +133,6 @@ async function loadPenjab(kd_dokter, kd_poli) {
         `;
 
         penjabList.forEach(p => {
-            // Gunakan inline styling untuk menengahkan nama penjab di dalam card
             html += `
                 <div class="card" style="text-align: center; padding: 25px 10px;" onclick="daftar('${kd_dokter}', '${kd_poli}', '${p.kd_pj}', '${p.png_jawab}')">
                     <h4 style="margin: 0;">${p.png_jawab}</h4>
@@ -142,7 +141,6 @@ async function loadPenjab(kd_dokter, kd_poli) {
         });
         html += "</div>";
 
-        // Timpa isi container jadwalPoli dengan pilihan penjab
         document.getElementById('jadwalPoli').innerHTML = html;
     } catch (e) {
         alert("Error load penjamin: " + e.message);
@@ -162,15 +160,11 @@ async function daftar(kd_dokter, kd_poli, kd_pj, nm_pj) {
     const nm_poli = sessionStorage.getItem("nm_poli_" + kd_poli) || kd_poli;
     const nm_pasien = sessionStorage.getItem("nm_pasien");
 
-    // Simpan kd_pj ke session untuk digunakan di fungsi simpan
     sessionStorage.setItem("draft_kd_pj", kd_pj);
     sessionStorage.setItem("draft_kd_dokter", kd_dokter);
     sessionStorage.setItem("draft_kd_poli", kd_poli);
 
-    const data = {
-        nm_pasien, nm_dokter, nm_poli, nm_pj
-    };
-
+    const data = { nm_pasien, nm_dokter, nm_poli, nm_pj };
     tampilkanDraft(data);
 }
 
@@ -223,7 +217,6 @@ async function simpanRegistrasi() {
         return;
     }
 
-    // Arahkan ke cetak_bukti.php
     window.location.href = `cetak_bukti.php?no_rawat=${reg.no_rawat}`;
 }
 
@@ -233,4 +226,41 @@ function kembaliKeForm() {
     document.getElementById('anjunganTitle').classList.remove("hidden");
     document.getElementById('identitas').value = "";
     sessionStorage.clear();
+}
+
+// Fungsi Panggil Antrean Loket dengan penanganan Cache/Error yang lebih ketat
+async function cetakAntreanLoket() {
+    const btn = document.getElementById('btnAntreanLoket');
+    const textAsli = btn ? btn.innerHTML : "🎟️ AMBIL ANTREAN LOKET";
+    
+    try {
+        if(btn) {
+            btn.innerHTML = "⏳ Sedang mencetak...";
+            btn.disabled = true;
+        }
+
+        // Ambil data dalam format Teks terlebih dahulu (untuk melacak jika ada error PHP)
+        const res = await fetch('api_antrian_loket.php');
+        const text = await res.text();
+        
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (err) {
+            console.error("Kesalahan parsing JSON. Output PHP:", text);
+            throw new Error("Respons dari server tidak valid. Cek Console Log.");
+        }
+
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        window.location.href = `cetak_antrian_loket.php?nomor=${data.nomor}&tanggal=${data.tanggal}&jam=${data.jam}`;
+    } catch (e) {
+        alert("Gagal mengambil antrean: " + e.message);
+        if(btn) {
+            btn.innerHTML = textAsli;
+            btn.disabled = false;
+        }
+    }
 }

@@ -146,6 +146,18 @@ $sql_insert = "INSERT INTO reg_periksa
      '$umurdaftar', '$sttsumur', '$status_bayar', '$status_poli')";
 
 if (bukaquery($sql_insert)) {
+
+    // --- MULAI TAMBAHAN FITUR AUDIT TRAIL ---
+    // Buka koneksi khusus untuk menyimpan tracker (melakukan escape pada string SQLe agar aman)
+    $connTracker = bukakoneksi();
+    $sqle_escaped = mysqli_real_escape_string($connTracker, $sql_insert);
+    $waktu_tracker = date('Y-m-d H:i:s');
+    $user_tracker = 'anjungan mandiri'; 
+    $sql_tracker = "INSERT INTO trackersql (tanggal, sqle, usere) VALUES ('$waktu_tracker', '$sqle_escaped', '$user_tracker')";
+    mysqli_query($connTracker, $sql_tracker);
+    mysqli_close($connTracker);
+    // --- SELESAI TAMBAHAN FITUR AUDIT TRAIL ---
+
     // Ambil setting instansi
     $sql_setting = "SELECT nama_instansi, alamat_instansi, kabupaten FROM setting LIMIT 1";
     $res_setting = bukaquery($sql_setting);

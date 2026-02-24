@@ -15,7 +15,7 @@ $sql = "SELECT b.nm_bangsal, k.kelas, k.statusdata,
                SUM(CASE WHEN k.status='KOSONG' THEN 1 ELSE 0 END) AS kosong
         FROM kamar k
         JOIN bangsal b ON k.kd_bangsal = b.kd_bangsal
-        WHERE k.statusdata = '1'
+        Where k.statusdata = '1'
         GROUP BY b.nm_bangsal, k.kelas, k.statusdata
         ORDER BY k.kelas ASC";
 $result = bukaquery($sql);
@@ -28,12 +28,16 @@ $count = mysqli_num_rows($result);
 <head>
   <meta charset="UTF-8">
   <title>Dashboard Ketersediaan Kamar</title>
+  <!-- CSS global (logo, instansi, jam, banner) -->
   <link rel="stylesheet" href="../assets/style.css">
+  <!-- CSS khusus kamar -->
   <link rel="stylesheet" href="kamar.css">
 </head>
 <body>
   <header class="header">
-    <div class="logo"><?php include '../assets/logo.php'; ?></div>
+    <div class="logo">
+      <?php include '../assets/logo.php'; ?>
+    </div>
     <div class="instansi">
       <h1><?= $setting['nama_instansi'] ?></h1>
       <p><?= $setting['alamat_instansi'] ?> – <?= $setting['kabupaten'] ?></p>
@@ -45,51 +49,49 @@ $count = mysqli_num_rows($result);
   <main class="dashboard">
     <h2>DASHBOARD KETERSEDIAAN KAMAR INAP</h2>
 
+    <!-- Grid: scrollable hanya jika card >= 10 -->
     <div class="grid <?= ($count >= 10 ? 'scrollable' : '') ?>">
       <?php while($row = mysqli_fetch_assoc($result)): ?>
         <div class="card">
-          <div class="header-box">
-            <h3><?= $row['nm_bangsal'] ?></h3>
-            <div class="kelas">(<?= $row['kelas'] ?>)</div>
-          </div>
-
-          <div class="info-box">
-            <div class="box total">
-              BED
-              <span><?= $row['jumlah'] ?></span>
-            </div>
-            <div class="box terisi">
-              TERISI
-              <span><?= $row['terisi'] ?></span>
-            </div>
-          </div>
-          <div class="box kosong">
-            KOSONG
-            <span><?= $row['kosong'] ?></span>
-          </div>
+          <h3><?= $row['nm_bangsal'] ?></h3>
+          <div class="kelas">(<?= $row['kelas'] ?>)</div>
+          <table class="info">
+            <tr><td>Total Bed</td><td>: <?= $row['jumlah'] ?></td></tr>
+            <tr><td>Terisi</td><td>: <?= $row['terisi'] ?></td></tr>
+            <tr><td>Kosong</td><td class="kosong">: <?= $row['kosong'] ?></td></tr>
+          </table>
         </div>
-
       <?php endwhile; ?>
     </div>
 
+    <!-- Banner ucapan default -->
     <?php include '../assets/banner.php'; ?>
   </main>
 
   <script src="../assets/clock.js"></script>
+
+  <!-- Refresh otomatis setiap 60 detik -->
   <script>
-    setTimeout(function(){ location.reload(); }, 60000);
+  setTimeout(function(){
+     location.reload();
+  }, 60000);
+  </script>
+
+  <!-- Auto scroll vertikal hanya jika scrollable -->
+  <script>
     document.querySelectorAll('.grid.scrollable').forEach(grid => {
-      let direction = 1;
+      let direction = 1; // 1 = turun, -1 = naik
       function autoScroll() {
         grid.scrollTop += direction;
         if (grid.scrollTop + grid.clientHeight >= grid.scrollHeight) {
-          direction = -1;
+          direction = -1; // ganti arah ke atas
         } else if (grid.scrollTop <= 0) {
-          direction = 1;
+          direction = 1; // ganti arah ke bawah
         }
       }
-      setInterval(autoScroll, 50);
+      setInterval(autoScroll, 50); // kecepatan scroll
     });
   </script>
+
 </body>
 </html>
